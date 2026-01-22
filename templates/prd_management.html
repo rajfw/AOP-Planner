@@ -1,0 +1,2224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI PRD Management | Freshworks AI AOP Planner Suite</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown-light.min.css"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header-logo-img {
+            height: 120px;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.4));
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 16px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-right: 15px;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: 600;
+            display: block;
+            font-size: 0.9rem;
+            color: white;
+        }
+
+        .user-role {
+            font-size: 0.75rem;
+            color: #cbd5e1;
+            text-transform: capitalize;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .logout-btn {
+            color: #fca5a5;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-left: 10px;
+            transition: color 0.2s;
+        }
+
+        .logout-btn:hover {
+            color: #ef4444;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1.2fr 2fr 1fr;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .chat-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 250px);
+            position: sticky;
+            top: 20px;
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: white;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .message.user {
+            background: #667eea;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+
+        .message.ai {
+            background: #f1f5f9;
+            color: #334155;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+
+        .chat-input-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .chat-input:focus {
+            border-color: #667eea;
+        }
+
+        .btn-chat {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-chat:hover {
+            background: #5a67d8;
+        }
+
+        .insert-btn {
+            display: block;
+            margin-top: 5px;
+            font-size: 0.75rem;
+            color: #667eea;
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .insert-btn:hover {
+            color: #5a67d8;
+        }
+
+        /* RICE Scoring CSS */
+        .rice-container {
+            margin-top: 25px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .rice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .rice-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .rice-score-badge {
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 1.4rem;
+            font-weight: 800;
+        }
+
+        .rice-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .rice-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .rice-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .rice-bar-bg {
+            height: 8px;
+            background: #f1f5f9;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .rice-bar-fill {
+            height: 100%;
+            background: #667eea;
+            transition: width 0.6s ease;
+        }
+
+        .rice-verdict {
+            padding: 12px;
+            background: #f8fafc;
+            border-left: 4px solid #667eea;
+            font-size: 0.9rem;
+            color: #334155;
+            font-style: italic;
+        }
+
+        /* Wizard Styles */
+        .wizard-stepper {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            padding: 0 10px;
+            position: relative;
+        }
+
+        .wizard-stepper::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 40px;
+            right: 40px;
+            height: 2px;
+            background: #e2e8f0;
+            z-index: 1;
+        }
+
+        .step-item {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .step-circle {
+            width: 32px;
+            height: 32px;
+            background: white;
+            border: 2px solid #cbd5e1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #64748b;
+            transition: all 0.3s ease;
+        }
+
+        .step-item.active .step-circle {
+            background: #667eea;
+            border-color: #667eea;
+            color: white;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
+        }
+
+        .step-item.completed .step-circle {
+            background: #10b981;
+            border-color: #10b981;
+            color: white;
+        }
+
+        .step-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        .step-item.active .step-label {
+            color: #667eea;
+        }
+
+        .wizard-step {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .wizard-step.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group-wizard {
+            margin-bottom: 20px;
+        }
+
+        .form-group-wizard label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #334155;
+            margin-bottom: 8px;
+        }
+
+        .form-group-wizard textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 120px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-group-wizard textarea:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .wizard-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        /* Workflow Switcher Styles */
+        .workflow-tabs {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 25px;
+            padding: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            width: fit-content;
+        }
+
+        .wf-tab {
+            padding: 10px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .wf-tab.active {
+            background: #667eea;
+            color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .wf-tab:hover:not(.active) {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+        }
+
+        .workflow-view {
+            display: none;
+            animation: slideIn 0.4s ease;
+        }
+
+        .workflow-view.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .lifecycle-stepper {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            padding: 20px;
+            background: white;
+            border-bottom: 1px solid #eef2f6;
+        }
+
+        .lc-step {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0.5;
+            filter: grayscale(1);
+        }
+
+        .lc-step.active {
+            opacity: 1;
+            filter: grayscale(0);
+            background: #f8fafc;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+        }
+
+        .lc-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: white;
+        }
+
+        .lc-step[data-mode="draft"] .lc-icon {
+            background: #6366f1;
+        }
+
+        .lc-step[data-mode="expand"] .lc-icon {
+            background: #ec4899;
+        }
+
+        .lc-step[data-mode="review"] .lc-icon {
+            background: #8b5cf6;
+        }
+
+        .lc-step[data-mode="hub"] .lc-icon {
+            background: #10b981;
+        }
+
+        .lc-label {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #1e293b;
+        }
+
+        .header-actions {
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-chip {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-chip:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .mode-container {
+            display: none;
+        }
+
+        .mode-container.active {
+            display: block;
+            animation: slideIn 0.4s ease;
+        }
+
+        /* Field Hint Styles */
+        .field-label-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .field-hint-trigger {
+            font-size: 0.8rem;
+            color: #6366f1;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+            background: rgba(99, 102, 241, 0.1);
+            padding: 4px 10px;
+            border-radius: 20px;
+            transition: all 0.3s;
+        }
+
+        .field-hint-trigger:hover {
+            background: rgba(99, 102, 241, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .sample-btn {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+        }
+
+        .sample-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            /* Reduced to 2 columns */
+            gap: 25px;
+            min-height: calc(100vh - 250px);
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .upload-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .editor-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .section-title {
+            color: #333;
+            font-size: 1.4em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: #667eea;
+        }
+
+        .upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 15px;
+            padding: 40px 20px;
+            text-align: center;
+            background: white;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .upload-area:hover {
+            background: #f0f2ff;
+            border-color: #764ba2;
+        }
+
+        .upload-area i {
+            font-size: 48px;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .upload-area h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .upload-area p {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-list {
+            margin-top: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .file-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .file-item:hover {
+            transform: translateX(5px);
+        }
+
+        .file-info h4 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .file-info p {
+            color: #666;
+            font-size: 0.85em;
+        }
+
+        .file-actions button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background 0.3s ease;
+        }
+
+        .file-actions button:hover {
+            background: #764ba2;
+        }
+
+        .file-actions button:hover {
+            background: #764ba2;
+        }
+
+        .file-actions button.btn-delete {
+            background: #ff4757;
+            margin-left: 5px;
+        }
+
+        .file-actions button.btn-delete:hover {
+            background: #ff6b81;
+        }
+
+        .editor-container {
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 400px);
+            min-height: 500px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .editor-tabs {
+            display: flex;
+            background: #667eea;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 15px;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .tab-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .tab-button.active {
+            background: white;
+            color: #667eea;
+        }
+
+        .editor-content {
+            flex: 1;
+            display: flex;
+        }
+
+        textarea,
+        .preview {
+            flex: 1;
+            padding: 20px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            border: none;
+            resize: none;
+            outline: none;
+            background: white;
+            overflow-y: auto;
+        }
+
+        .preview {
+            background: white;
+            padding: 30px;
+        }
+
+        .markdown-body {
+            box-sizing: border-box;
+            min-width: 200px;
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            padding: 14px 20px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            font-size: 1em;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 152, 0, 0.4);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            color: white;
+        }
+
+        .btn-info:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
+        }
+
+        .analysis-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .analysis-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .analysis-card h3 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .analysis-card p {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .select-improvement {
+            display: grid;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .improvement-option {
+            padding: 15px;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .improvement-option:hover {
+            background: #f0f2ff;
+        }
+
+        .improvement-option.selected {
+            background: #667eea;
+            color: white;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading i {
+            font-size: 2em;
+            color: #667eea;
+            margin-bottom: 10px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            border-left: 5px solid #4CAF50;
+        }
+
+        .notification.error {
+            border-left: 5px solid #f44336;
+        }
+
+        .notification.info {
+            border-left: 5px solid #2196F3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-actions">
+                <button class="action-chip" onclick="resetForNewPRD()">
+                    <i class="fas fa-plus-circle"></i> New PRD
+                </button>
+                <button class="action-chip" onclick="switchMode('hub')">
+                    <i class="fas fa-folder-open"></i> Draft Hub
+                </button>
+            </div>
+            <div style="position: absolute; top: 20px; right: 20px; display: flex; align-items: center;">
+                <div class="user-profile">
+                    <div class="user-info">
+                        <span class="user-name">{{ current_user.name }}</span>
+                        <span class="user-role">{{ current_user.role }}</span>
+                    </div>
+                    <img src="{{ current_user.avatar }}" alt="Avatar" class="user-avatar">
+                    {% if current_user.role == 'admin' %}
+                    <a href="/admin" class="logout-btn" title="Admin Settings"
+                        style="color: #6366f1; margin-left: 12px;">
+                        <i class="fas fa-cog"></i>
+                    </a>
+                    {% endif %}
+                    <a href="/logout" class="logout-btn" title="Logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </a>
+                </div>
+                <a href="/"
+                    style="color: white; text-decoration: none; background: rgba(255,255,255,0.1); padding: 8px 16px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2); transition: all 0.3s;"
+                    onmouseover="this.style.background='rgba(255,255,255,0.2)'"
+                    onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+                    <i class="fas fa-home"></i> Home
+                </a>
+            </div>
+            <img src="https://brandlogos.net/wp-content/uploads/2024/04/freshworks-logo_brandlogos.net_c6t5u.png"
+                alt="Freshworks Logo" class="header-logo-img">
+            <h1>AI PRD Lifecycle</h1>
+            <p>From core vision to strategic prioritization – all in one unified workspace</p>
+        </div>
+
+        <div class="lifecycle-stepper" id="lifecycleStepper">
+            <div class="lc-step active" onclick="switchMode('draft')" data-mode="draft">
+                <div class="lc-icon"><i class="fas fa-edit"></i></div>
+                <span class="lc-label">1. Drafting</span>
+            </div>
+            <div class="lc-step" onclick="switchMode('expand')" data-mode="expand">
+                <div class="lc-icon"><i class="fas fa-wand-magic-sparkles"></i></div>
+                <span class="lc-label">2. Expanding</span>
+            </div>
+            <div class="lc-step" onclick="switchMode('review')" data-mode="review">
+                <div class="lc-icon"><i class="fas fa-chart-line"></i></div>
+                <span class="lc-label">3. Strategic Review</span>
+            </div>
+            <div class="lc-step" onclick="switchMode('hub')" data-mode="hub">
+                <div class="lc-icon"><i class="fas fa-archive"></i></div>
+                <span class="lc-label">4. Draft Hub</span>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- Left Workspace: Dedicated Lifecycle Modes -->
+            <div class="workspace-area">
+
+                <!-- Mode 1: Drafting (Wizard) -->
+                <div id="mode-draft" class="mode-container active">
+                    <div class="editor-section">
+                        <div class="section-title"
+                            style="display: flex; justify-content: space-between; align-items: center;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <i class="fas fa-edit"></i>
+                                <span>1. Core Vision & Drafting</span>
+                            </div>
+                            <button class="sample-btn" onclick="loadSamplePRD()">
+                                <i class="fas fa-sparkles"></i> Load Sample
+                            </button>
+                        </div>
+
+                        <div class="wizard-stepper">
+                            <div class="step-item active" onclick="goToStep(1)" data-step="1">
+                                <div class="step-circle">1</div>
+                                <span class="step-label">Vision</span>
+                            </div>
+                            <div class="step-item" onclick="goToStep(2)" data-step="2">
+                                <div class="step-circle">2</div>
+                                <span class="step-label">Users</span>
+                            </div>
+                            <div class="step-item" onclick="goToStep(3)" data-step="3">
+                                <div class="step-circle">3</div>
+                                <span class="step-label">Spec</span>
+                            </div>
+                            <div class="step-item" onclick="goToStep(4)" data-step="4">
+                                <div class="step-circle">4</div>
+                                <span class="step-label">Strategy</span>
+                            </div>
+                        </div>
+
+                        <div class="editor-container" style="height: auto; min-height: 500px; padding: 20px;">
+                            <!-- Step 1: Core Vision -->
+                            <div class="wizard-step active" id="step1">
+                                <div class="form-group-wizard">
+                                    <div class="field-label-wrapper">
+                                        <label>Executive Summary</label>
+                                        <span class="field-hint-trigger" onclick="showFieldHint('summary')"><i
+                                                class="fas fa-lightbulb"></i> Tip</span>
+                                    </div>
+                                    <textarea id="wiz_summary"
+                                        placeholder="What is this product/feature and why are we building it?"
+                                        oninput="syncToMarkdown()"></textarea>
+                                </div>
+                                <div class="form-group-wizard">
+                                    <div class="field-label-wrapper">
+                                        <label>Strategic Objectives</label>
+                                        <span class="field-hint-trigger" onclick="showFieldHint('objectives')"><i
+                                                class="fas fa-lightbulb"></i> Tip</span>
+                                    </div>
+                                    <textarea id="wiz_objectives"
+                                        placeholder="What are the key goals we aim to achieve?"
+                                        oninput="syncToMarkdown()"></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Step 2: User Context -->
+                            <div class="wizard-step" id="step2">
+                                <div class="form-group-wizard">
+                                    <div class="field-label-wrapper">
+                                        <label>Target Personas</label>
+                                        <span class="field-hint-trigger" onclick="showFieldHint('personas')"><i
+                                                class="fas fa-lightbulb"></i> Tip</span>
+                                    </div>
+                                    <textarea id="wiz_personas"
+                                        placeholder="Who are the main users and what are their pain points?"
+                                        oninput="syncToMarkdown()"></textarea>
+                                </div>
+                                <div class="form-group-wizard">
+                                    <div class="field-label-wrapper">
+                                        <label>User Stories & Acceptance Criteria</label>
+                                        <span class="field-hint-trigger" onclick="showFieldHint('stories')"><i
+                                                class="fas fa-lightbulb"></i> Tip</span>
+                                    </div>
+                                    <textarea id="wiz_stories"
+                                        placeholder="As a [role], I want to [action] so that [value]..."
+                                        oninput="syncToMarkdown()"></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Step 3: Features & Spec -->
+                            <div class="wizard-step" id="step3">
+                                <div class="form-group-wizard">
+                                    <div class="field-label-wrapper">
+                                        <label>Functional Requirements</label>
+                                        <span class="field-hint-trigger" onclick="showFieldHint('functional')"><i
+                                                class="fas fa-lightbulb"></i> Tip</span>
+                                    </div>
+                                    <textarea id="wiz_functional" placeholder="List the core features and behaviors..."
+                                        oninput="syncToMarkdown()"></textarea>
+                                </div>
+                                <div class="form-group-wizard">
+                                    <div class="field-label-wrapper">
+                                        <label>Non-Functional Requirements</label>
+                                        <span class="field-hint-trigger" onclick="showFieldHint('nonfunctional')"><i
+                                                class="fas fa-lightbulb"></i> Tip</span>
+                                    </div>
+                                    <textarea id="wiz_nonfunctional"
+                                        placeholder="Performance, security, scalability, etc."
+                                        oninput="syncToMarkdown()"></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Step 4: Strategy & Review -->
+                            <div class="wizard-step" id="step4">
+                                <div class="form-group-wizard">
+                                    <div class="field-label-wrapper">
+                                        <label>Success Metrics (KPIs)</label>
+                                        <span class="field-hint-trigger" onclick="showFieldHint('metrics')"><i
+                                                class="fas fa-lightbulb"></i> Tip</span>
+                                    </div>
+                                    <textarea id="wiz_metrics" placeholder="How will we measure success?"
+                                        oninput="syncToMarkdown()"></textarea>
+                                </div>
+                                <div class="form-group-wizard">
+                                    <div class="field-label-wrapper">
+                                        <label>Risks & Mitigation</label>
+                                        <span class="field-hint-trigger" onclick="showFieldHint('risks')"><i
+                                                class="fas fa-lightbulb"></i> Tip</span>
+                                    </div>
+                                    <textarea id="wiz_risks"
+                                        placeholder="What could go wrong and how will we handle it?"
+                                        oninput="syncToMarkdown()"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="wizard-nav"
+                            style="margin-top: 20px; display: flex; justify-content: space-between; padding: 0 20px;">
+                            <button class="btn btn-secondary" id="prevBtn" onclick="changeStep(-1)"
+                                style="display: none;">
+                                <i class="fas fa-arrow-left"></i> Previous
+                            </button>
+                            <button class="btn btn-primary" id="nextBtn" onclick="changeStep(1)">
+                                Next <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mode 2: Expanding (Master Editor) -->
+                <div id="mode-expand" class="mode-container">
+                    <div class="editor-section">
+                        <div class="section-title">
+                            <i class="fas fa-wand-magic-sparkles"></i>
+                            <span>2. AI Expansion & Refinement</span>
+                        </div>
+                        <div class="tabs" style="margin-bottom: 15px;">
+                            <button class="tab-button active" id="tab-editor" onclick="switchTab('editor')">Markdown
+                                Master
+                                Editor</button>
+                            <button class="tab-button" id="tab-preview" onclick="switchTab('preview')">Live
+                                Preview</button>
+                        </div>
+                        <div class="editor-container" id="editorTab"
+                            style="height: auto; min-height: 600px; width: 100%; max-width: 100%; overflow-x: hidden;">
+                            <textarea id="prdEditor" placeholder="Your PRD Markdown will appear here..."
+                                oninput="updatePreview()"
+                                style="height: 600px; width: 100%; max-width: 100%; resize: vertical; overflow-wrap: break-word; word-wrap: break-word;"></textarea>
+                        </div>
+                        <div class="preview-container markdown-body" id="previewTab"
+                            style="display: none; border: 1px solid #e2e8f0; border-radius: 10px; padding: 25px; min-height: 600px; width: 100%; max-width: 100%; background: white; overflow-y: auto; overflow-x: auto; overflow-wrap: break-word; word-wrap: break-word;">
+                            <div id="prdPreview" style="max-width: 100%;"></div>
+                        </div>
+                        <div class="action-buttons" style="margin-top: 20px; display: flex; gap: 10px;">
+                            <button class="btn btn-success" onclick="savePRD()">
+                                <i class="fas fa-save"></i> Save Draft
+                            </button>
+                            <button class="btn btn-warning" onclick="showImproveModal()">
+                                <i class="fas fa-magic"></i> Improve with AI
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mode 3: Strategic Review (Analysis) -->
+                <div id="mode-review" class="mode-container">
+                    <div id="analysisSection" style="display: block;">
+                        <div class="analysis-actions"
+                            style="margin-bottom: 20px; display: flex; gap: 10px; justify-content: space-between; align-items: center;">
+                            <div id="activeFileName"
+                                style="font-weight: 600; color: #6366f1; background: rgba(99, 102, 241, 0.1); padding: 6px 15px; border-radius: 20px; font-size: 0.9rem; display: none;">
+                                <i class="fas fa-file-alt"></i> <span></span>
+                            </div>
+                            <div style="display: flex; gap: 10px;">
+                                <button class="btn btn-info" onclick="analyzePRD()">
+                                    <i class="fas fa-sync"></i> Refresh Analysis
+                                </button>
+                                <button class="btn btn-primary" onclick="exportPRD()">
+                                    <i class="fas fa-download"></i> Export
+                                </button>
+                                <button class="btn btn-secondary" onclick="copyContent()">
+                                    <i class="fas fa-copy"></i> Copy MD
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Analysis Sections -->
+                        <div class="analysis-section" id="metricsSection"
+                            style="display: none; background: white; border-radius: 20px; border: 1px solid #e2e8f0; padding: 25px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+                            <div class="section-title"><i class="fas fa-chart-pie"></i> <span>Strategic
+                                    Metrics</span>
+                            </div>
+                            <div id="metricsResults"></div>
+                        </div>
+
+                        <div class="analysis-section" id="riceSection"
+                            style="display: none; background: white; border-radius: 20px; border: 1px solid #e2e8f0; padding: 25px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+                            <div class="section-title"><i class="fas fa-balance-scale"></i> <span>RICE
+                                    Prioritization</span>
+                            </div>
+                            <div id="riceResults"></div>
+                        </div>
+
+                        <div class="analysis-section" id="insightSection"
+                            style="display: none; background: white; border-radius: 20px; border: 1px solid #e2e8f0; padding: 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+                            <div class="section-title"><i class="fas fa-brain"></i> <span>Strategic
+                                    Insights</span></div>
+                            <div id="insightResults"></div>
+                        </div>
+
+                        <div id="analysisPlaceholder"
+                            style="text-align: center; color: #64748b; padding: 60px; background: white; border-radius: 20px; border: 2px dashed #e2e8f0;">
+                            <i class="fas fa-chart-bar"
+                                style="font-size: 4rem; opacity: 0.2; margin-bottom: 20px; display: block;"></i>
+                            <p style="font-size: 1.1rem;">Switch to 'Expanding' to write your PRD, then come
+                                here for
+                                strategic validation.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mode 4: Draft Hub (Library) -->
+                <div id="mode-hub" class="mode-container">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="upload-section">
+                            <div class="section-title"><i class="fas fa-upload"></i> <span>Ingest
+                                    Source</span></div>
+                            <div class="upload-area" id="dropArea"
+                                onclick="document.getElementById('fileInput').click()" style="min-height: 250px;">
+                                <i class="fas fa-cloud-upload-alt" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                                <h3>Import Existing PRD</h3>
+                                <p>Drag & Drop or Click to Upload (MD, TXT, PDF, DOCX)</p>
+                            </div>
+                            <input type="file" id="fileInput" class="file-input" accept=".pdf,.doc,.docx,.txt,.md"
+                                onchange="handleFileUpload(event)">
+                        </div>
+
+                        <div class="library-section">
+                            <div class="section-title"
+                                style="display: flex; justify-content: space-between; align-items: center;">
+                                <div><i class="fas fa-history"></i> <span>PRD Library</span></div>
+                                <button class="btn btn-sm" onclick="listPRDs()"
+                                    style="background: #f1f5f9; color: #475569;">Refresh Library</button>
+                            </div>
+                            <div class="file-list" id="fileList"
+                                style="height: calc(100vh - 450px); min-height: 400px; overflow-y: auto; padding-right: 10px;">
+                                <!-- File list populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-section">
+                <div class="section-title">
+                    <i class="fas fa-robot"></i>
+                    <span>AI Assistant</span>
+                </div>
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message ai">
+                        Hi! I'm your PRD assistant. How can I help you improve your document today?
+                    </div>
+                </div>
+                <div class="chat-input-container">
+                    <input type="text" id="chatInput" class="chat-input" placeholder="Ask AI..."
+                        onkeypress="if(event.key === 'Enter') sendMessage()">
+                    <button class="btn-chat" onclick="sendMessage()" id="sendBtn">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Improve Modal -->
+        <div class="modal" id="improveModal">
+            <div class="modal-content">
+                <span class="close-modal" onclick="closeImproveModal()">&times;</span>
+                <h2><i class="fas fa-magic"></i> Improve PRD with AI</h2>
+
+                <div class="select-improvement">
+                    <div class="improvement-option" onclick="selectImprovement('comprehensive')" id="opt-comprehensive">
+                        <h4>Comprehensive Improvement</h4>
+                        <p>Full enhancement of structure, content, and clarity</p>
+                    </div>
+                    <div class="improvement-option" onclick="selectImprovement('clarify')" id="opt-clarify">
+                        <h4>Clarify & Simplify</h4>
+                        <p>Make PRD more concise and easier to understand</p>
+                    </div>
+                    <div class="improvement-option" onclick="selectImprovement('expand')" id="opt-expand">
+                        <h4>Expand & Detail</h4>
+                        <p>Add more details and depth to the PRD</p>
+                    </div>
+                </div>
+
+                <div class="loading" id="improveLoading">
+                    <i class="fas fa-spinner"></i>
+                    <p>Improving your PRD with AI...</p>
+                </div>
+
+                <div class="action-buttons" style="margin-top: 30px;">
+                    <button class="btn btn-primary" onclick="improvePRD()">
+                        <i class="fas fa-rocket"></i> Start Improvement
+                    </button>
+                    <button class="btn" onclick="closeImproveModal()" style="background: #f8f9fa;">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Modal -->
+        <div class="modal" id="loadingModal">
+            <div class="modal-content">
+                <div class="loading">
+                    <i class="fas fa-spinner"></i>
+                    <p id="loadingText">Processing...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification -->
+        <div class="notification" id="notification"></div>
+
+        <script>
+            let currentPRD = null;
+            let selectedImprovement = 'comprehensive';
+            let currentWizardStep = 1;
+            let currentMode = 'draft';
+
+            function switchMode(mode) {
+                currentMode = mode;
+
+                // Update Stepper UI
+                document.querySelectorAll('.lc-step').forEach(step => {
+                    step.classList.toggle('active', step.dataset.mode === mode);
+                });
+
+                // Update Workspace Containers
+                document.querySelectorAll('.mode-container').forEach(container => {
+                    container.classList.toggle('active', container.id === `mode-${mode}`);
+                });
+
+                // Special logic for Hub
+                if (mode === 'hub') {
+                    listPRDs();
+                }
+
+                // Special logic for Review
+                if (mode === 'review') {
+                    analyzePRD();
+                }
+
+                showNotification(`Switched to ${mode.charAt(0).toUpperCase() + mode.slice(1)} Mode`, 'info');
+            }
+
+            function goToStep(step) {
+                // Update steps visibility
+                document.querySelectorAll('.wizard-step').forEach(s => s.classList.remove('active'));
+                const targetStep = document.getElementById(`step${step}`);
+                if (targetStep) targetStep.classList.add('active');
+
+                // Update stepper UI
+                document.querySelectorAll('.step-item').forEach(s => {
+                    const sNum = parseInt(s.getAttribute('data-step'));
+                    s.classList.toggle('active', sNum === step);
+                    s.classList.toggle('completed', sNum < step);
+                });
+
+                // Update nav buttons
+                const prevBtn = document.getElementById('prevBtn');
+                const nextBtn = document.getElementById('nextBtn');
+                const saveBtn = document.getElementById('saveBtn');
+
+                if (prevBtn) prevBtn.style.display = step > 1 ? 'inline-flex' : 'none';
+                if (nextBtn) {
+                    nextBtn.innerHTML = step === 4 ? 'Finish & Expand <i class="fas fa-magic"></i>' : 'Next <i class="fas fa-arrow-right"></i>';
+                }
+
+                currentWizardStep = step;
+                if (step === 4) updatePreview();
+            }
+
+            function changeStep(delta) {
+                const nextStep = currentWizardStep + delta;
+                if (nextStep >= 1 && nextStep <= 4) {
+                    goToStep(nextStep);
+                } else if (nextStep > 4) {
+                    // Automatically switch to 'Expand' mode when wizard finishes
+                    switchMode('expand');
+                }
+            }
+
+            function syncToMarkdown() {
+                const summary = document.getElementById('wiz_summary').value;
+                const objectives = document.getElementById('wiz_objectives').value;
+                const personas = document.getElementById('wiz_personas').value;
+                const stories = document.getElementById('wiz_stories').value;
+                const functional = document.getElementById('wiz_functional').value;
+                const nonfunctional = document.getElementById('wiz_nonfunctional').value;
+                const metrics = document.getElementById('wiz_metrics').value;
+                const risks = document.getElementById('wiz_risks').value;
+
+                const markdown = `# PRD Executive Summary\n${summary}\n\n` +
+                    `# Strategic Objectives\n${objectives}\n\n` +
+                    `# Target Personas\n${personas}\n\n` +
+                    `# User Stories & Acceptance Criteria\n${stories}\n\n` +
+                    `# Functional Requirements\n${functional}\n\n` +
+                    `# Non-Functional Requirements\n${nonfunctional}\n\n` +
+                    `# Success Metrics (KPIs)\n${metrics}\n\n` +
+                    `# Risks & Mitigation\n${risks}`;
+
+                document.getElementById('prdEditor').value = markdown;
+                if (currentWizardStep === 4) updatePreview();
+            }
+
+            function parseMarkdownToWizard(md) {
+                if (!md) return;
+
+                // Simple split logic based on headers
+                const sections = {
+                    'wiz_summary': /# PRD Executive Summary\n([\s\S]*?)(?=#|$)/,
+                    'wiz_objectives': /# Strategic Objectives\n([\s\S]*?)(?=#|$)/,
+                    'wiz_personas': /# Target Personas\n([\s\S]*?)(?=#|$)/,
+                    'wiz_stories': /# User Stories & Acceptance Criteria\n([\s\S]*?)(?=#|$)/,
+                    'wiz_functional': /# Functional Requirements\n([\s\S]*?)(?=#|$)/,
+                    'wiz_nonfunctional': /# Non-Functional Requirements\n([\s\S]*?)(?=#|$)/,
+                    'wiz_metrics': /# Success Metrics \(KPIs\)\n([\s\S]*?)(?=#|$)/,
+                    'wiz_risks': /# Risks & Mitigation\n([\s\S]*?)(?=#|$)/
+                };
+
+                for (const [id, regex] of Object.entries(sections)) {
+                    const match = md.match(regex);
+                    if (match && match[1]) {
+                        document.getElementById(id).value = match[1].trim();
+                    }
+                }
+            }
+
+            function showFieldHint(field) {
+                const hints = {
+                    'summary': 'Focus on the "Why". Use the formula: [Product] is building [Feature] to help [Audience] achieve [Outcome]. Keep it under 3 sentences.',
+                    'objectives': 'List 3-5 specific, measurable goals. Example: "Reduce churn by 10%" or "Automate 50% of manual data entry".',
+                    'personas': 'Describe your primary (who uses it most) and secondary users. Mention their technical proficiency and main pain points.',
+                    'stories': 'Use the standard format: "As a [User], I want to [Task] so that [Benefit]". Include at least one edge case if possible.',
+                    'functional': 'Be specific about behavior. "The system must..." rather than "The system should...". Group by sub-feature.',
+                    'nonfunctional': 'Specify Performance (latency < 100ms), Security (SOC2 compliance), and Scalability (supports 10k concurrent users).',
+                    'metrics': 'Define North Star metrics and leading indicators. How will you know this is a success in 30 days?',
+                    'risks': 'Be honest about technical debt, dependency on other teams, or potential user adoption friction.'
+                };
+                showNotification(`💡 TIP: ${hints[field]}`, 'info');
+            }
+
+            function loadSamplePRD() {
+                const sampleData = {
+                    'wiz_summary': 'AI-Powered Smart Search for AOP Planner. This feature uses LLMs to provide semantic search capabilities across thousands of roadmap requests, allowing users to find relevant items using natural language queries instead of just keywords.',
+                    'wiz_objectives': '- Improve search relevance score by 40%\n- Reduce time-to-finding (TTF) from 45s to 10s\n- Enable cross-Business Unit discovery of duplicate roadmap items',
+                    'wiz_personas': '1. Product Ops Manager: Needs to identify overlapping requests from different teams.\n2. Engineering Lead: Needs to find technical specs related to specific modules quickly.',
+                    'wiz_stories': '- As a ProdOps manager, I want to ask "What features are we building for mobile data security?" so I can group relevant requests.\n- As an Admin, I want to see a "Related Items" list so I can avoid duplicate planning.',
+                    'wiz_functional': '- Natural Language Processing engine integration\n- Vector database for semantic indexing\n- Real-time indexing of new roadmap entries\n- Feedback loop for search result quality',
+                    'wiz_nonfunctional': '- Search latency must be < 500ms for 95% of queries\n- Data encryption at rest and in transit\n- 99.9% availability for the search service',
+                    'wiz_metrics': '- Search Conversion Rate (clicked on a result)\n- User Satisfaction Score (CSAT) for search quality\n- Reduction in duplicate roadmap requests',
+                    'wiz_risks': '- High API costs for LLM processing\n- Potential for "hallucinated" search groupings if prompts are not tuned\n- Dependency on the Vector DB provider up-time'
+                };
+
+                for (const [id, value] of Object.entries(sampleData)) {
+                    document.getElementById(id).value = value;
+                }
+
+                syncToMarkdown();
+                showNotification('✨ Sample PRD loaded into Wizard! Review each step to learn best practices.', 'success');
+            }
+            function showNotification(message, type = 'info') {
+                const notification = document.getElementById('notification');
+                notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                <span>${message}</span>
+            `;
+                notification.className = `notification ${type} show`;
+
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+
+            function showLoading(text = 'Processing...') {
+                document.getElementById('loadingText').textContent = text;
+                document.getElementById('loadingModal').style.display = 'flex';
+            }
+
+            function hideLoading() {
+                document.getElementById('loadingModal').style.display = 'none';
+            }
+
+            async function handleFileUpload(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                showLoading('Uploading and parsing document...');
+
+                const formData = new FormData();
+                formData.append('file', file);
+
+                try {
+                    const response = await fetch('/api/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        currentPRD = data.parsed_data;
+                        document.getElementById('prdEditor').value = currentPRD.content;
+                        parseMarkdownToWizard(currentPRD.content);
+                        updatePreview();
+                        showNotification('PRD uploaded and parsed successfully!', 'success');
+
+                        // Update file list
+                        addFileToList(data.filename, data.metadata);
+
+                        // Show analysis
+                        await analyzePRD();
+                    } else {
+                        showNotification(data.error || 'Upload failed', 'error');
+                    }
+                } catch (error) {
+                    showNotification('Error uploading file: ' + error.message, 'error');
+                } finally {
+                    hideLoading();
+                }
+            }
+
+            function addFileToList(filename, metadata) {
+                const fileList = document.getElementById('fileList');
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                <div class="file-info">
+                    <h4 style="color: #4f46e5; margin-bottom: 4px; font-size: 1.05rem;">
+                        <i class="fas fa-file-alt" style="margin-right: 8px; opacity: 0.7;"></i>${filename}
+                    </h4>
+                    <p style="font-size: 0.85rem; color: #64748b;">${(metadata.file_size / 1024).toFixed(1)} KB • ${new Date(metadata.uploaded_at).toLocaleDateString()}</p>
+                </div>
+                <div class="file-actions">
+                    <button onclick="loadPRD('${filename}')" style="background: #eff6ff; color: #1d4ed8; border: 1px solid #dbeafe;">Load</button>
+                    <button class="btn-delete" onclick="deletePRD('${filename}')" title="Delete PRD"><i class="fas fa-trash"></i></button>
+                </div>
+            `;
+                fileList.insertBefore(fileItem, fileList.firstChild);
+            }
+
+            async function loadPRD(filename) {
+                showLoading('Loading PRD...');
+                try {
+                    const response = await fetch(`/api/list`);
+                    const data = await response.json();
+
+                    if (data.success) {
+                        const prd = data.prds.find(p => p.filename === filename);
+                        if (prd) {
+                            currentPRD = prd.metadata;
+                            currentPRD.filename = filename; // Ensure filename is preserved
+                            const content = prd.metadata.parsed_data.content;
+                            document.getElementById('prdEditor').value = content;
+
+                            // Update active file display
+                            const nameDisplay = document.getElementById('activeFileName');
+                            if (nameDisplay) {
+                                nameDisplay.querySelector('span').textContent = filename;
+                                nameDisplay.style.display = 'flex';
+                            }
+
+                            // Parse into wizard fields
+                            parseMarkdownToWizard(content);
+                            updatePreview();
+
+                            // Switch to Expanding mode (Master Editor)
+                            switchMode('expand');
+                            switchTab('editor');
+
+                            showNotification(`Loaded: ${filename}`, 'success');
+                        }
+                    }
+                } catch (error) {
+                    showNotification('Error loading PRD', 'error');
+                } finally {
+                    hideLoading();
+                }
+            }
+
+            async function listPRDs() {
+                showLoading('Loading PRD list...');
+                try {
+                    const response = await fetch('/api/list');
+                    const data = await response.json();
+
+                    if (data.success) {
+                        const fileList = document.getElementById('fileList');
+                        fileList.innerHTML = '';
+
+                        data.prds.forEach(prd => {
+                            addFileToList(prd.filename, prd.metadata);
+                        });
+
+                        showNotification(`Found ${data.count} PRDs`, 'success');
+                    }
+                } catch (error) {
+                    showNotification('Error listing PRDs', 'error');
+                } finally {
+                    hideLoading();
+                }
+            }
+
+            async function deletePRD(filename) {
+                if (!confirm(`Are you sure you want to delete ${filename}?`)) return;
+
+                showLoading('Deleting file...');
+                try {
+                    const response = await fetch(`/api/delete/${filename}`, {
+                        method: 'DELETE'
+                    });
+                    const data = await response.json();
+
+                    if (data.success) {
+                        showNotification('File deleted successfully', 'success');
+                        listPRDs(); // Refresh list
+
+                        // Clear editor if deleted file was open
+                        if (currentPRD && currentPRD.filename === filename) {
+                            currentPRD = null;
+                            document.getElementById('prdEditor').value = '';
+                            updatePreview();
+                        }
+                    } else {
+                        showNotification(data.error || 'Delete failed', 'error');
+                    }
+                } catch (error) {
+                    showNotification('Error deleting file', 'error');
+                } finally {
+                    hideLoading();
+                }
+            }
+
+            function switchTab(tab) {
+                const editorTab = document.getElementById('editorTab');
+                const previewTab = document.getElementById('previewTab');
+                const tabs = document.querySelectorAll('.tab-button');
+
+                tabs.forEach(t => t.classList.remove('active'));
+
+                if (tab === 'editor') {
+                    document.getElementById('tab-editor').classList.add('active');
+                    editorTab.style.display = 'block';
+                    previewTab.style.display = 'none';
+                } else {
+                    document.getElementById('tab-preview').classList.add('active');
+                    editorTab.style.display = 'none';
+                    previewTab.style.display = 'block';
+                    updatePreview();
+                }
+            }
+
+            function updatePreview() {
+                const editor = document.getElementById('prdEditor');
+                const preview = document.getElementById('prdPreview');
+                if (editor && preview) {
+                    preview.innerHTML = `<div class="markdown-body">${marked.parse(editor.value)}</div>`;
+                }
+            }
+
+            async function copyContent() {
+                const content = document.getElementById('prdEditor').value;
+                if (!content) return;
+
+                try {
+                    await navigator.clipboard.writeText(content);
+                    showNotification('Content copied to clipboard!', 'success');
+                } catch (err) {
+                    showNotification('Failed to copy content', 'error');
+                }
+            }
+
+            function clearContent() {
+                if (confirm('Are you sure you want to clear the editor?')) {
+                    document.getElementById('prdEditor').value = '';
+                    updatePreview();
+                    // Clear wizard fields too
+                    document.querySelectorAll('.wizard-step textarea').forEach(ta => ta.value = '');
+                    showNotification('Editor cleared', 'info');
+                }
+            }
+
+            async function savePRD() {
+                const content = document.getElementById('prdEditor').value;
+                const filename = currentPRD ? currentPRD.filename : `prd_${Date.now()}.md`;
+
+                showLoading('Saving PRD...');
+
+                try {
+                    const response = await fetch('/api/save', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            content: content,
+                            filename: filename
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        showNotification('PRD saved successfully!', 'success');
+                        switchMode('hub');
+                        listPRDs();
+                    } else {
+                        showNotification(data.error || 'Save failed', 'error');
+                    }
+                } catch (error) {
+                    showNotification('Error saving PRD', 'error');
+                } finally {
+                    hideLoading();
+                }
+            }
+
+            function showImproveModal() {
+                document.getElementById('improveModal').style.display = 'flex';
+                selectImprovement('comprehensive');
+            }
+
+            function closeImproveModal() {
+                document.getElementById('improveModal').style.display = 'none';
+                document.getElementById('improveLoading').style.display = 'none';
+            }
+
+            function selectImprovement(type) {
+                selectedImprovement = type;
+
+                // Update UI
+                document.querySelectorAll('.improvement-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                document.getElementById(`opt-${type}`).classList.add('selected');
+            }
+
+            async function improvePRD() {
+                const content = document.getElementById('prdEditor').value;
+
+                if (!content.trim()) {
+                    showNotification('Please add content to improve', 'error');
+                    return;
+                }
+
+                document.getElementById('improveLoading').style.display = 'block';
+
+                try {
+                    const response = await fetch('/api/improve', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            content: content,
+                            improvement_type: selectedImprovement
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        document.getElementById('prdEditor').value = data.improved_content;
+                        updatePreview();
+                        showNotification('PRD improved successfully! <a href="#" onclick="exportPRD(\'_improved\'); return false;" style="color: inherit; text-decoration: underline; font-weight: bold; margin-left: 10px;">Download Improved Version</a>', 'success');
+                        closeImproveModal();
+                    } else {
+                        showNotification(data.error || 'Improvement failed', 'error');
+                    }
+                } catch (error) {
+                    showNotification('Error improving PRD', 'error');
+                } finally {
+                    document.getElementById('improveLoading').style.display = 'none';
+                }
+            }
+
+            function resetForNewPRD() {
+                if (confirm('Start a new PRD? This will clear current unsaved changes.')) {
+                    currentPRD = null;
+                    document.getElementById('prdEditor').value = '';
+                    document.querySelectorAll('.wizard-step textarea').forEach(ta => ta.value = '');
+                    updatePreview();
+
+                    // Reset active file display
+                    const nameDisplay = document.getElementById('activeFileName');
+                    if (nameDisplay) nameDisplay.style.display = 'none';
+
+                    switchMode('draft');
+                    goToStep(1);
+                    showNotification('New PRD workspace initialized', 'success');
+                }
+            }
+
+            async function analyzePRD() {
+                const content = document.getElementById('prdEditor').value;
+
+                if (!content.trim()) {
+                    showNotification('Please draft some content first!', 'warning');
+                    return;
+                }
+
+                showLoading('Analyzing PRD...');
+
+                try {
+                    const response = await fetch('/api/analyze', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            content: content
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        const analysis = data.analysis;
+
+                        // Update active file display if possible
+                        const nameDisplay = document.getElementById('activeFileName');
+                        if (nameDisplay) {
+                            const fname = currentPRD ? currentPRD.filename : 'Current Document';
+                            nameDisplay.querySelector('span').textContent = fname;
+                            nameDisplay.style.display = 'flex';
+                        }
+
+                        // Hide placeholder
+                        document.getElementById('analysisPlaceholder').style.display = 'none';
+
+                        // 1. Render Metrics
+                        const metricsDiv = document.getElementById('metricsResults');
+                        metricsDiv.innerHTML = `
+                        <div class="analysis-grid">
+                            <div class="analysis-card">
+                                <h3>${analysis.completeness_score}%</h3>
+                                <p>Completeness Score</p>
+                            </div>
+                            <div class="analysis-card">
+                                <h3>${analysis.word_count}</h3>
+                                <p>Word Count</p>
+                            </div>
+                            <div class="analysis-card">
+                                <h3>${analysis.missing_sections.length}</h3>
+                                <p>Missing Sections</p>
+                            </div>
+                        </div>
+                    `;
+                        document.getElementById('metricsSection').style.display = 'block';
+
+                        // 2. Render RICE
+                        const riceDiv = document.getElementById('riceResults');
+                        if (analysis.rice) {
+                            riceDiv.innerHTML = `
+                            <div class="rice-container" style="border: none; padding: 0; box-shadow: none;">
+                                <div class="rice-header">
+                                    <div class="rice-title" style="visibility: hidden; height: 0;">RICE Prioritization</div>
+                                    <div class="rice-score-badge">${analysis.rice.total_score}</div>
+                                </div>
+                                <div class="rice-grid">
+                                    <div class="rice-item">
+                                        <div class="rice-label"><span>Reach</span><span>${analysis.rice.reach} users</span></div>
+                                        <div class="rice-bar-bg"><div class="rice-bar-fill" style="width: ${Math.min(analysis.rice.reach / 100, 100)}%;"></div></div>
+                                    </div>
+                                    <div class="rice-item">
+                                        <div class="rice-label"><span>Impact</span><span>${analysis.rice.impact} / 3.0</span></div>
+                                        <div class="rice-bar-bg"><div class="rice-bar-fill" style="width: ${(analysis.rice.impact / 3.0) * 100}%;"></div></div>
+                                    </div>
+                                    <div class="rice-item">
+                                        <div class="rice-label"><span>Confidence</span><span>${analysis.rice.confidence}%</span></div>
+                                        <div class="rice-bar-bg"><div class="rice-bar-fill" style="width: ${analysis.rice.confidence}%;"></div></div>
+                                    </div>
+                                    <div class="rice-item">
+                                        <div class="rice-label"><span>Effort</span><span>${analysis.rice.effort} PM</span></div>
+                                        <div class="rice-bar-bg"><div class="rice-bar-fill" style="width: ${Math.min(analysis.rice.effort * 10, 100)}%; background: #fbbf24;"></div></div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                            document.getElementById('riceSection').style.display = 'block';
+                        } else {
+                            document.getElementById('riceSection').style.display = 'none';
+                        }
+
+                        // 3. Render Strategic Insights
+                        const insightDiv = document.getElementById('insightResults');
+                        insightDiv.innerHTML = `
+                        ${analysis.rice ? `
+                            <div class="rice-verdict" style="margin-top: 0;">
+                                <strong>AI Strategic Verdict:</strong><br>${analysis.rice.verdict}
+                            </div>
+                        ` : ''}
+                        
+                        ${analysis.missing_sections.length > 0 ? `
+                            <div style="margin-top: 20px; padding: 15px; background: #fff3cd; border-radius: 10px; border-left: 4px solid #856404;">
+                                <h4 style="color: #856404; margin-bottom: 10px;">
+                                    <i class="fas fa-exclamation-triangle"></i> Gaps Identified:
+                                </h4>
+                                <ul style="color: #856404; margin-left: 20px;">
+                                    ${analysis.missing_sections.map(section => `<li>${section}</li>`).join('')}
+                                </ul>
+                            </div>
+                        ` : ''}
+                        
+                        ${analysis.recommendations.filter(r => r).length > 0 ? `
+                            <div style="margin-top: 20px; padding: 15px; background: #d1ecf1; border-radius: 10px; border-left: 4px solid #0c5460;">
+                                <h4 style="color: #0c5460; margin-bottom: 10px;">
+                                    <i class="fas fa-lightbulb"></i> AI Recommendations:
+                                </h4>
+                                <ul style="color: #0c5460; margin-left: 20px;">
+                                    ${analysis.recommendations.filter(r => r).map(rec => `<li>${rec}</li>`).join('')}
+                                </ul>
+                            </div>
+                        ` : ''}
+                    `;
+                        document.getElementById('insightSection').style.display = 'block';
+                    }
+                } catch (error) {
+                    console.error('Analysis error:', error);
+                } finally {
+                    hideLoading();
+                }
+            }
+
+            async function exportPRD(suffix = '_export') {
+                const content = document.getElementById('prdEditor').value;
+                const originalFilename = currentPRD ? currentPRD.filename : 'prd.md';
+                const extension = originalFilename.split('.').pop().toLowerCase();
+                const basename = originalFilename.replace(/\.[^/.]+$/, "");
+
+                // For text-based formats, we can keep it client-side for speed
+                if (['md', 'txt'].includes(extension)) {
+                    const blob = new Blob([content], { type: 'text/markdown' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${basename}${suffix}.${extension}`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    showNotification(`PRD exported as .${extension}`, 'success');
+                    return;
+                }
+
+                // For other formats (docx), use the backend
+                showLoading(`Generating .${extension} file...`);
+                try {
+                    const response = await fetch('/api/export', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            content: content,
+                            filename: `${basename}${suffix}`,
+                            format: extension
+                        })
+                    });
+
+                    if (response.ok) {
+                        const blob = await response.blob();
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `${basename}${suffix}.${extension}`;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                        showNotification(`PRD exported as .${extension}`, 'success');
+                    } else {
+                        const errorData = await response.json();
+                        showNotification(errorData.error || 'Export failed', 'error');
+                    }
+                } catch (error) {
+                    showNotification('Error exporting PRD: ' + error.message, 'error');
+                } finally {
+                    hideLoading();
+                }
+            }
+
+            // Drag and drop support
+            const dropArea = document.getElementById('dropArea');
+
+            dropArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropArea.style.background = '#f0f2ff';
+            });
+
+            dropArea.addEventListener('dragleave', () => {
+                dropArea.style.background = 'white';
+            });
+
+            dropArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropArea.style.background = 'white';
+
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    const fileInput = document.getElementById('fileInput');
+                    fileInput.files = files;
+                    handleFileUpload({ target: { files: files } });
+                }
+            });
+
+            // AI Assistant Chat Logic
+            let chatHistory = [];
+
+            async function sendMessage() {
+                const input = document.getElementById('chatInput');
+                const message = input.value.trim();
+                if (!message) return;
+
+                // Add user message to UI
+                addMessageToUI('user', message);
+                input.value = '';
+
+                // Add to history
+                chatHistory.push({ role: 'user', content: message });
+
+                const prdContext = document.getElementById('prdEditor').value;
+                const sendBtn = document.getElementById('sendBtn');
+                sendBtn.disabled = true;
+
+                try {
+                    const response = await fetch('/api/prd/chat', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            messages: chatHistory,
+                            prd_context: prdContext
+                        })
+                    });
+
+                    const data = await response.json();
+                    if (data.success) {
+                        addMessageToUI('ai', data.reply);
+                        chatHistory.push({ role: 'assistant', content: data.reply });
+                    } else {
+                        addMessageToUI('ai', 'Error: ' + data.error);
+                    }
+                } catch (error) {
+                    addMessageToUI('ai', 'Error: Could not reach assistant.');
+                } finally {
+                    sendBtn.disabled = false;
+                }
+            }
+
+            function addMessageToUI(role, content) {
+                const container = document.getElementById('chatMessages');
+                const msgDiv = document.createElement('div');
+                msgDiv.className = `message ${role}`;
+
+                // Convert markdown-ish links or blocks in AI response if needed
+                // For simplicity, just text for now, but we'll add an "Insert" button if it looks like code/content
+                msgDiv.textContent = content;
+
+                if (role === 'ai') {
+                    const insertBtn = document.createElement('button');
+                    insertBtn.className = 'insert-btn';
+                    insertBtn.innerHTML = '<i class="fas fa-plus"></i> Insert into Editor';
+                    insertBtn.onclick = () => insertAtCursor(content);
+                    msgDiv.appendChild(insertBtn);
+                }
+
+                container.appendChild(msgDiv);
+                container.scrollTop = container.scrollHeight;
+            }
+
+            function insertAtCursor(text) {
+                // Find currently active wizard textarea or default to Master
+                let textarea = document.activeElement;
+                if (!textarea || !textarea.id.startsWith('wiz_')) {
+                    // Not in a field, try to find first visible one
+                    textarea = document.querySelector('.wizard-step.active textarea');
+                }
+
+                if (!textarea) textarea = document.getElementById('prdEditor');
+
+                const start = textarea.selectionStart;
+                const end = textarea.selectionEnd;
+                const currentContent = textarea.value;
+
+                const newContent = currentContent.substring(0, start) +
+                    "\n" + text + "\n" +
+                    currentContent.substring(end);
+
+                textarea.value = newContent;
+
+                // Sync to master editor after insertion
+                if (textarea.id.startsWith('wiz_')) syncToMarkdown();
+                else updatePreview();
+
+                textarea.focus();
+                showNotification('Content inserted into editor', 'success');
+            }
+
+            // Initialize
+            document.getElementById('prdEditor').addEventListener('input', () => {
+                updatePreview();
+                parseMarkdownToWizard(document.getElementById('prdEditor').value);
+            });
+
+            goToStep(1);
+            listPRDs();
+        </script>
+</body>
+
+</html>

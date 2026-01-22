@@ -1,0 +1,3 @@
+# Keep data directory but ignore contents
+*
+!.gitkeep

@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel | Freshworks AI AOP Planner Suite</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #a855f7;
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-logo {
+            height: 40px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #4f46e5;
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: white;
+        }
+
+        .btn-outline:hover {
+            background: var(--border);
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .field-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .field-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+        }
+
+        .field-item:hover {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .field-info h4 {
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+
+        .field-info p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .tag {
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 5px;
+            background: var(--primary);
+            color: white;
+            margin-left: 10px;
+            text-transform: uppercase;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 500px;
+            padding: 40px;
+            border-radius: 24px;
+            border: 1px solid var(--border);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: white;
+            font-family: inherit;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .options-area {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="header-title">
+                <img src="https://brandlogos.net/wp-content/uploads/2024/04/freshworks-logo_brandlogos.net_c6t5u.png"
+                    alt="Freshworks Logo" class="header-logo">
+                <h1>Admin Settings</h1>
+            </div>
+            <div style="display: flex; gap: 15px;">
+                <a href="/" class="btn btn-outline"><i class="fas fa-home"></i> Back to Suite</a>
+            </div>
+        </header>
+
+        <div class="card">
+            <div class="section-header">
+                <h2>Roadmap Form Configuration</h2>
+                <button class="btn btn-primary" onclick="showFieldModal()">
+                    <i class="fas fa-plus"></i> Add Field
+                </button>
+            </div>
+
+            <div id="fieldList" class="field-list">
+                <!-- Fields populated by JS -->
+            </div>
+
+            <div style="margin-top: 30px; display: flex; justify-content: flex-end; gap: 15px;">
+                <button class="btn btn-outline" onclick="loadSampleData()"
+                    style="color: var(--secondary); border-color: var(--secondary);">
+                    <i class="fas fa-magic"></i> Load Sample Data
+                </button>
+                <button class="btn btn-primary" onclick="saveConfiguration()">
+                    <i class="fas fa-save"></i> Save All Changes
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Field Modal -->
+    <div class="modal" id="fieldModal">
+        <div class="modal-content">
+            <h2 id="modalTitle" style="margin-bottom: 25px;">Add New Field</h2>
+            <form id="fieldForm">
+                <div class="form-group">
+                    <label>Internal ID (CamelCase/SnakeCase)</label>
+                    <input type="text" id="fId" placeholder="e.g. project_code" required>
+                </div>
+                <div class="form-group">
+                    <label>Display Label</label>
+                    <input type="text" id="fLabel" placeholder="e.g. Project Code" required>
+                </div>
+                <div class="form-group">
+                    <label>Field Type</label>
+                    <select id="fType" onchange="toggleOptionsForType()">
+                        <option value="text">Text Input</option>
+                        <option value="textarea">Multi-line Text (Textarea)</option>
+                        <option value="select">Dropdown (Select)</option>
+                        <option value="number">Number Input</option>
+                    </select>
+                </div>
+                <div id="optionsGroup" class="form-group" style="display:none;">
+                    <label>Options (comma separated)</label>
+                    <textarea id="fOptions" placeholder="Option 1, Option 2, Option 3"></textarea>
+                </div>
+                <div class="form-group" style="display: flex; align-items: center; gap: 10px;">
+                    <input type="checkbox" id="fRequired" style="width: auto;">
+                    <label style="margin-bottom: 0;">Required Field</label>
+                </div>
+                <div style="display: flex; gap: 15px; margin-top: 30px;">
+                    <button type="button" class="btn btn-primary" style="flex: 1;" onclick="applyField()">Apply</button>
+                    <button type="button" class="btn btn-outline" style="flex: 1;"
+                        onclick="hideFieldModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="loading" class="loading-overlay">
+        <i class="fas fa-circle-notch fa-spin fa-3x" style="color: var(--primary);"></i>
+    </div>
+
+    <script>
+        let currentFields = [];
+        let editingIdx = -1;
+
+        async function init() {
+            showLoading(true);
+            try {
+                const res = await fetch('/api/form-config');
+                currentFields = await res.json();
+                renderFields();
+            } catch (err) {
+                alert('Failed to load configuration');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function renderFields() {
+            const list = document.getElementById('fieldList');
+            list.innerHTML = '';
+
+            currentFields.forEach((field, idx) => {
+                const item = document.createElement('div');
+                item.className = 'field-item';
+                item.innerHTML = `
+                    <div class="field-info">
+                        <h4>${field.label} <span class="tag">${field.type}</span> ${field.required ? '<span class="tag" style="background:#ef4444">Req</span>' : ''}</h4>
+                        <p>ID: ${field.id} ${field.options ? ' | Options: ' + field.options.join(', ') : ''}</p>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-outline" onclick="editField(${idx})"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-danger" onclick="removeField(${idx})"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        function showFieldModal() {
+            editingIdx = -1;
+            document.getElementById('modalTitle').innerText = 'Add New Field';
+            document.getElementById('fieldForm').reset();
+            toggleOptionsForType();
+            document.getElementById('fieldModal').style.display = 'flex';
+        }
+
+        function hideFieldModal() {
+            document.getElementById('fieldModal').style.display = 'none';
+        }
+
+        function toggleOptionsForType() {
+            const type = document.getElementById('fType').value;
+            const group = document.getElementById('optionsGroup');
+            group.style.display = type === 'select' ? 'block' : 'none';
+        }
+
+        function applyField() {
+            const field = {
+                id: document.getElementById('fId').value,
+                label: document.getElementById('fLabel').value,
+                type: document.getElementById('fType').value,
+                required: document.getElementById('fRequired').checked,
+                placeholder: `Enter ${document.getElementById('fLabel').value.toLowerCase()}...`
+            };
+
+            if (field.type === 'select') {
+                const optStr = document.getElementById('fOptions').value;
+                field.options = optStr.split(',').map(o => o.trim()).filter(o => o);
+            }
+
+            if (editingIdx > -1) {
+                currentFields[editingIdx] = field;
+            } else {
+                currentFields.push(field);
+            }
+
+            renderFields();
+            hideFieldModal();
+        }
+
+        function editField(idx) {
+            editingIdx = idx;
+            const field = currentFields[idx];
+            document.getElementById('modalTitle').innerText = 'Edit Field';
+            document.getElementById('fId').value = field.id;
+            document.getElementById('fLabel').value = field.label;
+            document.getElementById('fType').value = field.type;
+            document.getElementById('fRequired').checked = field.required;
+            if (field.options) {
+                document.getElementById('fOptions').value = field.options.join(', ');
+            }
+            toggleOptionsForType();
+            document.getElementById('fieldModal').style.display = 'flex';
+        }
+
+        function removeField(idx) {
+            if (confirm('Are you sure you want to remove this field?')) {
+                currentFields.splice(idx, 1);
+                renderFields();
+            }
+        }
+
+        async function loadSampleData() {
+            if (!confirm('This will load a set of sample roadmap requests. Proceed?')) return;
+            showLoading(true);
+            try {
+                const res = await fetch('/api/admin/load-sample', { method: 'POST' });
+                const result = await res.json();
+                if (result.success) {
+                    alert(`Successfully loaded ${result.count} sample roadmap requests!`);
+                } else {
+                    alert('Error loading sample data: ' + result.error);
+                }
+            } catch (err) {
+                alert('Network error while loading sample data');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function saveConfiguration() {
+            showLoading(true);
+            try {
+                const res = await fetch('/api/form-config', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(currentFields)
+                });
+                if (res.ok) {
+                    alert('Configuration saved successfully! The Roadmap form has been updated.');
+                } else {
+                    alert('Error saving configuration');
+                }
+            } catch (err) {
+                alert('Network error while saving');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'flex' : 'none';
+        }
+
+        init();
+    </script>
+</body>
+
+</html>

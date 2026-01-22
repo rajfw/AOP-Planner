@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Freshworks AI AOP Planner Suite</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --bg: #0f172a;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --text: #f8fafc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: radial-gradient(circle at top right, #1e293b, #0f172a);
+        }
+
+        .background-blobs {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .blob {
+            position: absolute;
+            filter: blur(80px);
+            opacity: 0.4;
+            border-radius: 50%;
+            animation: move 20s infinite alternate;
+        }
+
+        .blob-1 {
+            width: 400px;
+            height: 400px;
+            background: var(--primary);
+            top: -100px;
+            right: -100px;
+        }
+
+        .blob-2 {
+            width: 300px;
+            height: 300px;
+            background: var(--secondary);
+            bottom: -50px;
+            left: -50px;
+            animation-delay: -5s;
+        }
+
+        @keyframes move {
+            from {
+                transform: translate(0, 0) rotate(0deg);
+            }
+
+            to {
+                transform: translate(100px, 100px) rotate(90deg);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+            z-index: 1;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.25rem;
+            color: #94a3b8;
+        }
+
+        .logo {
+            width: 250px;
+            margin-bottom: 24px;
+            filter: drop-shadow(0 0 10px rgba(129, 140, 248, 0.3));
+        }
+
+        .user-profile {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: 600;
+            display: block;
+            font-size: 0.9rem;
+        }
+
+        .user-role {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            text-transform: capitalize;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+        }
+
+        .logout-btn {
+            color: #ef4444;
+            text-decoration: none;
+            font-size: 0.8rem;
+            margin-left: 10px;
+            transition: opacity 0.2s;
+        }
+
+        .logout-btn:hover {
+            opacity: 0.8;
+        }
+
+        .nav-container {
+            display: flex;
+            gap: 40px;
+            z-index: 1;
+            max-width: 1000px;
+            width: 90%;
+        }
+
+        .nav-card {
+            flex: 1;
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 40px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .nav-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-card:hover::before {
+            opacity: 1;
+        }
+
+        .icon-wrapper {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            font-size: 2.5rem;
+            color: #818cf8;
+            transition: transform 0.4s;
+        }
+
+        .nav-card:hover .icon-wrapper {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .nav-card h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .nav-card p {
+            color: #94a3b8;
+            line-height: 1.6;
+        }
+
+        .footer {
+            margin-top: 80px;
+            color: #64748b;
+            font-size: 0.875rem;
+            z-index: 1;
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+            }
+
+            .header h1 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="user-profile">
+        <div class="user-info">
+            <span class="user-name">{{ current_user.name }}</span>
+            <span class="user-role">{{ current_user.role }}</span>
+        </div>
+        <img src="{{ current_user.avatar }}" alt="Avatar" class="user-avatar">
+        {% if current_user.role == 'admin' %}
+        <a href="/admin" class="logout-btn" title="Admin Settings" style="color: #6366f1; margin-left: 15px;">
+            <i class="fas fa-cog"></i>
+        </a>
+        {% endif %}
+        <a href="/logout" class="logout-btn" title="Logout">
+            <i class="fas fa-sign-out-alt"></i>
+        </a>
+    </div>
+
+    <div class="header">
+        <img src="https://brandlogos.net/wp-content/uploads/2024/04/freshworks-logo_brandlogos.net_c6t5u.png"
+            alt="Freshworks Logo" class="logo">
+        <h1>Freshworks AI AOP Planner Suite</h1>
+        <p>Intelligent Planning & Strategy Suite</p>
+    </div>
+
+    <div class="nav-container">
+        <a href="/prd" class="nav-card">
+            <div class="icon-wrapper">
+                <i class="fas fa-brain"></i>
+            </div>
+            <h2>AI PRD Management</h2>
+            <p>Draft, refine, and optimize Product Requirements Documents with advanced AI assistance.</p>
+        </a>
+
+        <a href="/roadmap" class="nav-card">
+            <div class="icon-wrapper">
+                <i class="fas fa-map-marked-alt"></i>
+            </div>
+            <h2>AOP Roadmap</h2>
+            <p>Visualize and manage your Annual Operating Plan roadmap and strategic milestones.</p>
+        </a>
+    </div>
+
+    <div class="footer">
+        &copy; 2025 AOP Planner. All rights reserved.
+    </div>
+</body>
+
+</html>
