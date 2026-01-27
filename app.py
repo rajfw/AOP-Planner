@@ -376,16 +376,31 @@ def google_callback():
 @app.route('/api/login', methods=['POST'])
 def api_login():
     data = request.json
-    username = data.get('username')
-    password = data.get('password')
+    username = data.get('username', '').strip()
+    password = data.get('password', '').strip()
+    
+    print(f"Login attempt - Username: '{username}'")
     
     users = get_users()
+    
+    # Debug finding user
+    found_user = next((u for u in users if u['username'] == username), None)
+    if found_user:
+        print(f"User '{username}' exists. Checking password...")
+        if found_user['password'] == password:
+            print("Password match!")
+        else:
+            print(f"Password mismatch. Input length: {len(password)}, Stored length: {len(found_user['password'])}")
+    else:
+        print(f"User '{username}' does not exist in loaded users list.")
+        
     user_data = next((u for u in users if u['username'] == username and u['password'] == password), None)
     
     if user_data:
         user = User(user_data)
         login_user(user)
         return jsonify({'success': True})
+    
     return jsonify({'success': False, 'error': 'Invalid credentials'}), 401
 
 @app.route('/logout')

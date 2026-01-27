@@ -252,7 +252,10 @@
         async function handleManualLogin(e) {
             e.preventDefault();
             const formData = new FormData(e.target);
-            const data = Object.fromEntries(formData.entries());
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value.trim();
+            });
 
             try {
                 const res = await fetch('/api/login', {
