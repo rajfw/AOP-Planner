@@ -1,0 +1,81 @@
+[
+  {
+    "id": "title",
+    "label": "Feature Title",
+    "placeholder": "Enter feature name",
+    "required": true,
+    "type": "text"
+  },
+  {
+    "id": "description",
+    "label": "Description",
+    "placeholder": "Describe what this feature does and its value...",
+    "required": true,
+    "type": "textarea"
+  },
+  {
+    "id": "business_unit",
+    "label": "Business Unit",
+    "type": "select",
+    "required": true,
+    "placeholder": "Enter business unit...",
+    "options": [
+      "AI BU",
+      "CX BU",
+      "EX BU",
+      "CE BU"
+    ]
+  },
+  {
+    "id": "target_year",
+    "label": "Target Year",
+    "type": "select",
+    "required": true,
+    "placeholder": "Enter target year...",
+    "options": [
+      "2026",
+      "2027"
+    ]
+  },
+  {
+    "id": "half_year",
+    "label": "Cycle",
+    "options": [
+      "H1",
+      "H2"
+    ],
+    "required": true,
+    "type": "select"
+  },
+  {
+    "id": "quarter",
+    "label": "Quarter",
+    "options": [
+      "Q1",
+      "Q2",
+      "Q3",
+      "Q4"
+    ],
+    "required": true,
+    "type": "select"
+  },
+  {
+    "id": "feature_type",
+    "label": "Feature Type",
+    "type": "select",
+    "required": true,
+    "placeholder": "Enter feature type...",
+    "options": [
+      "Hero Big Rock",
+      "Big Rock"
+    ]
+  },
+  {
+    "id": "business_impact",
+    "label": "Business Impact (1-5)",
+    "max": 5,
+    "min": 1,
+    "required": true,
+    "type": "number"
+  }
+]

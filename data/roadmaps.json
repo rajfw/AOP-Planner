@@ -1,0 +1,159 @@
+[
+  {
+    "id": "3891745a-ec6a-4782-8c40-a36d9e65e714",
+    "title": "AI Driven forcasting",
+    "description": "AI Driven forcasting",
+    "business_unit": "AI BU",
+    "target_year": "2026",
+    "half_year": "H1",
+    "quarter": "Q1",
+    "feature_type": "Hero Big Rock",
+    "business_impact": 3,
+    "created_at": "2025-12-31T12:43:09.796087",
+    "dependencies": [
+      {
+        "bu": "CX BU",
+        "description": "AI Driven forcasting CX",
+        "title": "AI Driven forcasting for CX"
+      },
+      {
+        "bu": "EX BU",
+        "description": "AI Driven forcasting EX",
+        "title": "AI Driven forcasting EX"
+      }
+    ],
+    "attachments": [
+      {
+        "filename": "WhatsApp_Depth_Unified_-_Contextual_replies.txt",
+        "path": "uploads/roadmap_attachments/3891745a-ec6a-4782-8c40-a36d9e65e714/WhatsApp_Depth_Unified_-_Contextual_replies.txt",
+        "type": "prd"
+      }
+    ],
+    "rice": {
+      "reach": 5000,
+      "impact": 2,
+      "confidence": 70,
+      "effort": 4
+    }
+  },
+  {
+    "id": "b2189852-e8c3-4811-a393-900a51c0b836",
+    "title": "Forms 2.0: Richer Fields, Seamless Migration, Unified Experience",
+    "description": "Introduce Rich Text Editor, Attachment, and Formula fields in all forms...",
+    "business_unit": "EX BU",
+    "target_year": "2026",
+    "half_year": "H1",
+    "quarter": "Q2",
+    "feature_type": "Hero Big Rock",
+    "business_impact": 4,
+    "dependencies": [],
+    "attachments": [],
+    "created_at": "2025-12-31T14:13:57.722971",
+    "created_by": "Admin User"
+  },
+  {
+    "id": "41511e0a-7910-4580-ab51-530d6ce52c56",
+    "title": "Automated Change Risk scoring and Assessment",
+    "description": "Introduce a native, scalable risk assessment framework within Change Management...",
+    "business_unit": "EX BU",
+    "target_year": "2026",
+    "half_year": "H1",
+    "quarter": "Q1",
+    "feature_type": "Hero Big Rock",
+    "business_impact": 5,
+    "dependencies": [],
+    "attachments": [],
+    "created_at": "2025-12-31T14:13:57.723037",
+    "created_by": "Admin User"
+  },
+  {
+    "id": "d3a062eb-59de-4e64-b72b-0ede798c0618",
+    "title": "Service Health Dashboard powered by D42-ITOM Integration",
+    "description": "A more powerful and feature-rich Service Health Dashboard powered by Device42 and ITOM",
+    "business_unit": "EX BU",
+    "target_year": "2026",
+    "half_year": "H1",
+    "quarter": "Q1",
+    "feature_type": "Hero Big Rock",
+    "business_impact": 5,
+    "dependencies": [],
+    "attachments": [],
+    "created_at": "2025-12-31T14:13:57.723059",
+    "created_by": "Admin User"
+  },
+  {
+    "id": "aa5c2acd-d4af-4b24-af0e-5078810f1f88",
+    "title": "New FD Omni for existing customers",
+    "description": "Migration readiness for customers from FD(older accounts), Classic Omni & CSS Omni...",
+    "business_unit": "CX BU",
+    "target_year": "2026",
+    "half_year": "H1",
+    "quarter": "Q2",
+    "feature_type": "Hero Big Rock",
+    "business_impact": 5,
+    "dependencies": [],
+    "attachments": [],
+    "created_at": "2025-12-31T14:13:57.723075",
+    "created_by": "Admin User"
+  },
+  {
+    "id": "bba234ec-9c66-4eb5-81ae-c80fec41b341",
+    "title": "Proactive messaging for Omnichannel Freshdesk",
+    "description": "Support for contact segmentation and proactive campaigns across channels...",
+    "business_unit": "CX BU",
+    "target_year": "2026",
+    "half_year": "H2",
+    "quarter": "Q3",
+    "feature_type": "Hero Big Rock",
+    "business_impact": 4,
+    "dependencies": [],
+    "attachments": [],
+    "created_at": "2025-12-31T14:13:57.723094",
+    "created_by": "Admin User"
+  },
+  {
+    "id": "a968bf0b-0cd6-4024-9800-099476651475",
+    "title": "Enhanced portal",
+    "description": "AI powered search on the portal, AI prompt portal customization, OOTB themes...",
+    "business_unit": "CX BU",
+    "target_year": "2026",
+    "half_year": "H1",
+    "quarter": "Q2",
+    "feature_type": "Hero Big Rock",
+    "business_impact": 4,
+    "dependencies": [],
+    "attachments": [],
+    "created_at": "2025-12-31T14:13:57.723110",
+    "created_by": "Admin User"
+  },
+  {
+    "id": "9bcaff97-ce42-4ecc-9e94-8140db639581",
+    "title": "Enhanced Knowledge base",
+    "description": "AI powered KB insights and article generation, AI powered translation...",
+    "business_unit": "CX BU",
+    "target_year": "2026",
+    "half_year": "H2",
+    "quarter": "Q3",
+    "feature_type": "Hero Big Rock",
+    "business_impact": 4,
+    "dependencies": [],
+    "attachments": [],
+    "created_at": "2025-12-31T14:13:57.723126",
+    "created_by": "Admin User"
+  },
+  {
+    "id": "f8fc6176-c024-400c-bf75-196cf01fa08c",
+    "title": "Multi-departments",
+    "description": "Improved RBAC and isolation for tickets, contacts, analytics and admin setup...",
+    "business_unit": "CX BU",
+    "target_year": "2026",
+    "half_year": "H1",
+    "quarter": "Q1",
+    "feature_type": "Hero Big Rock",
+    "business_impact": 4,
+    "dependencies": [],
+    "attachments": [],
+    "created_at": "2025-12-31T14:13:57.723141",
+    "created_by": "Admin User"
+  }
+]

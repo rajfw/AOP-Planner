@@ -1,0 +1,20 @@
+[
+    {
+        "id": "admin",
+        "username": "admin",
+        "password": "adminpassword",
+        "name": "Admin User",
+        "email": "admin@freshworks.com",
+        "role": "admin",
+        "avatar": "https://ui-avatars.com/api/?name=Admin+User&background=6366f1&color=fff"
+    },
+    {
+        "id": "requester",
+        "username": "user",
+        "password": "userpassword",
+        "name": "Standard User",
+        "email": "user@freshworks.com",
+        "role": "requester",
+        "avatar": "https://ui-avatars.com/api/?name=Standard+User&background=c084fc&color=fff"
+    }
+]

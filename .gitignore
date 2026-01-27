@@ -44,7 +44,7 @@ instance/
 .DS_Store
 
 # Application Data
-data/*.json
+# data/*.json
 uploads/*
 !uploads/.gitkeep
 !data/.gitkeep
