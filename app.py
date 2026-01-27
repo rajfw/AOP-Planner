@@ -94,9 +94,21 @@ class User(UserMixin):
         self.avatar = user_data.get('avatar')
 
 def get_users():
+    print(f"DEBUG: get_users called. Path: {USERS_FILE}")
     if os.path.exists(USERS_FILE):
-        with open(USERS_FILE, 'r') as f:
-            return json.load(f)
+        try:
+            with open(USERS_FILE, 'r') as f:
+                data = json.load(f)
+                print(f"DEBUG: Loaded {len(data)} users: {[u.get('username') for u in data]}")
+                return data
+        except Exception as e:
+            print(f"DEBUG: Error loading users.json: {e}")
+            return []
+    else:
+        print(f"DEBUG: Users file NOT found at {USERS_FILE}")
+        # data dir check
+        print(f"DEBUG: Data dir exists? {os.path.exists(ROADMAP_DATA_DIR)}")
+        print(f"DEBUG: CWD: {os.getcwd()}")
     return []
 
 @login_manager.user_loader
