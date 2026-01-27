@@ -41,8 +41,11 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 app.config['ALLOWED_EXTENSIONS'] = {'txt', 'pdf', 'doc', 'docx', 'md'}
 
 # Create uploads and roadmap directories
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+ROADMAP_DATA_DIR = os.path.join(BASE_DIR, 'data')
+app.config['UPLOAD_FOLDER'] = os.path.join(BASE_DIR, 'uploads')
+
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-ROADMAP_DATA_DIR = 'data'
 ROADMAP_UPLOAD_DIR = os.path.join(app.config['UPLOAD_FOLDER'], 'roadmap_attachments')
 os.makedirs(ROADMAP_DATA_DIR, exist_ok=True)
 os.makedirs(ROADMAP_UPLOAD_DIR, exist_ok=True)
