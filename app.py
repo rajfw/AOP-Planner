@@ -162,7 +162,14 @@ else:
     print("OpenAI package not available. LLM features will be disabled.")
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    handlers=[
+        logging.FileHandler("app.log"),
+        logging.StreamHandler()
+    ]
+)
 logger = logging.getLogger(__name__)
 
 def allowed_file(filename):
