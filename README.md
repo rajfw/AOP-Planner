@@ -195,7 +195,7 @@ See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed production deployment instructio
 
 ## 👥 Contributing
 
-[Add contribution guidelines if applicable]
+Please refer to [CONTRIBUTING.md](CONTRIBUTING.md) for a detailed code walkthrough and development guide.
 
 ## 📧 Support
 
