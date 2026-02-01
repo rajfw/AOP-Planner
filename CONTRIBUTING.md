@@ -8,22 +8,42 @@ The AOP Planner is a **monolithic Flask application** designed for simplicity an
 
 ```mermaid
 graph TD
-    Client[Web Browser] <-->|HTTP/HTTPS| FlaskApp[Flask Application (app.py)]
+        Client["Web Browser"] -->|HTTP/HTTPS Requests| FlaskApp["Flask Application<br/>(app.py)"]
+    FlaskApp -->|HTML/CSS/JS Responses| Client
     
     subgraph "Backend Layer"
-        FlaskApp <--> Auth[Auth Module (OAuth/Custom)]
-        FlaskApp <--> Logic[Business Logic & AI]
+        FlaskApp --> Auth["Auth Module<br/>(OAuth/Custom)"]
+        Auth --> FlaskApp
+        FlaskApp --> Logic["Business Logic & AI"]
+        Logic --> FlaskApp
     end
     
-    subgraph "Data & Storage"
-        Logic <--> JSONDB[(JSON Database /data)]
-        Logic <--> FileSys[File System /uploads]
+    subgraph "Data & Storage Layer"
+        Logic --> JSONDB[("JSON Database<br/>/data directory")]
+        Logic --> FileSys["File System<br/>/uploads directory"]
+        JSONDB -.->|Read/Write| Logic
+        FileSys -.->|Store/Retrieve| Logic
     end
     
     subgraph "External Services"
-        Logic <--> OpenAI[OpenAI API / LLM]
-        Auth <--> Google[Google OAuth]
+        Logic --> OpenAI["OpenAI API / LLM"]
+        OpenAI -->|API Responses| Logic
+        Auth --> Google["Google OAuth"]
+        Google -->|Auth Tokens| Auth
     end
+    
+    %% Styling for better visualization
+    classDef client fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef flask fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef backend fill:#e8f5e8,stroke:#1b5e20,stroke-width:1px
+    classDef storage fill:#fff3e0,stroke:#e65100,stroke-width:1px
+    classDef external fill:#fce4ec,stroke:#880e4f,stroke-width:1px
+    
+    class Client client
+    class FlaskApp flask
+    class Auth,Logic backend
+    class JSONDB,FileSys storage
+    class OpenAI,Google external
 ```
 
 ## 📂 Project Structure
