@@ -150,7 +150,7 @@ if OPENAI_AVAILABLE:
         import openai
         # Initialize with proper configuration for v1.x
         client = OpenAI(
-            api_key="eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7Im5hbWUiOiJSYWplc3dhciBQIFMiLCJlbWFpbCI6InJhamVzd2FyLnN1YnJhbWFuaUBmcmVzaHdvcmtzLmNvbSIsImltYWdlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jS0FBUkNWSktyMjhxbU0xRTdnUE1fSlhPcDU4MEZHM2prNThMYzQ1SVB6eVFqN0lxWF89czk2LWMifSwianRpIjoiaUE0WHRaQlZuZVozZlJfVDFxNjlIIiwiaWF0IjoxNzY3MTU4MjU5LCJleHAiOjE3Njc3NjMwNTl9.GCxjwClM7nw0J-8fLlNGSKX2d1ixMF5dPYDaP_IqZy8",
+            api_key="eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7Im5hbWUiOiJSYWplc3dhciBQIFMiLCJlbWFpbCI6InJhamVzd2FyLnN1YnJhbWFuaUBmcmVzaHdvcmtzLmNvbSIsImltYWdlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jS0FBUkNWSktyMjhxbU0xRTdnUE1fSlhPcDU4MEZHM2prNThMYzQ1SVB6eVFqN0lxWF89czk2LWMifSwianRpIjoiT3NOSUtEVVdiaHhjSElvZHNMNXFEIiwiaWF0IjoxNzY5OTI3MTA3LCJleHAiOjE3NzA1MzE5MDd9.WASBTxcAlJhAjWlzdz4Myfa3DRdO8JdlLZsArUuMt10",
             base_url="https://cloudverse.freshworkscorp.com/api/v1"
         )
         print("OpenAI client initialized successfully")

@@ -1380,9 +1380,9 @@
         <div class="modal" id="improveModal">
             <div class="modal-content">
                 <span class="close-modal" onclick="closeImproveModal()">&times;</span>
-                <h2><i class="fas fa-magic"></i> Improve PRD with AI</h2>
+                <h2 id="heading-improve"><i class="fas fa-magic"></i> Improve PRD with AI</h2>
 
-                <div class="select-improvement">
+                <div class="select-improvement" id="improveOptions">
                     <div class="improvement-option" onclick="selectImprovement('comprehensive')" id="opt-comprehensive">
                         <h4>Comprehensive Improvement</h4>
                         <p>Full enhancement of structure, content, and clarity</p>
@@ -1402,7 +1402,7 @@
                     <p>Improving your PRD with AI...</p>
                 </div>
 
-                <div class="action-buttons" style="margin-top: 30px;">
+                <div class="action-buttons" id="improveActions" style="margin-top: 30px;">
                     <button class="btn btn-primary" onclick="improvePRD()">
                         <i class="fas fa-rocket"></i> Start Improvement
                     </button>
@@ -1837,6 +1837,7 @@
             function closeImproveModal() {
                 document.getElementById('improveModal').style.display = 'none';
                 document.getElementById('improveLoading').style.display = 'none';
+                resetImproveModal();
             }
 
             function selectImprovement(type) {
@@ -1849,6 +1850,8 @@
                 document.getElementById(`opt-${type}`).classList.add('selected');
             }
 
+            let activeThreadId = null;
+
             async function improvePRD() {
                 const content = document.getElementById('prdEditor').value;
 
@@ -1858,34 +1861,180 @@
                 }
 
                 document.getElementById('improveLoading').style.display = 'block';
+                document.getElementById('improveOptions').style.display = 'none';
+                document.getElementById('improveActions').style.display = 'none';
 
                 try {
-                    const response = await fetch('/api/improve', {
+                    const response = await fetch('/api/workflow/start', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
-                            content: content,
+                            prd_content: content,
                             improvement_type: selectedImprovement
                         })
                     });
 
                     const data = await response.json();
 
-                    if (data.success) {
-                        document.getElementById('prdEditor').value = data.improved_content;
-                        updatePreview();
-                        showNotification('PRD improved successfully! <a href="#" onclick="exportPRD(\'_improved\'); return false;" style="color: inherit; text-decoration: underline; font-weight: bold; margin-left: 10px;">Download Improved Version</a>', 'success');
-                        closeImproveModal();
+                    if (data.thread_id) {
+                        activeThreadId = data.thread_id;
+
+                        if (data.status === 'waiting_for_review') {
+                            showReviewUI(data.current_content, data.original_content);
+                        } else {
+                            // Poll or handle immediate completion
+                            showNotification('Workflow started but not in review state?', 'warning');
+                        }
                     } else {
                         showNotification(data.error || 'Improvement failed', 'error');
+                        document.getElementById('improveOptions').style.display = 'block';
                     }
                 } catch (error) {
-                    showNotification('Error improving PRD', 'error');
+                    showNotification('Error starting workflow: ' + error.message, 'error');
+                    document.getElementById('improveOptions').style.display = 'block';
                 } finally {
                     document.getElementById('improveLoading').style.display = 'none';
                 }
+            }
+
+            function showReviewUI(newContent, originalContent) {
+                const modalBody = document.querySelector('#improveModal .modal-body'); // detailed selector needed if multiple
+                // Or better, we inject a Review Section into the modal
+
+                document.getElementById('heading-improve').innerText = "Review AI Suggestions";
+
+                const reviewHTML = `
+                    <div id="reviewContainer" style="animation: fadeIn 0.3s;">
+                        <div style="margin-bottom: 15px; background: #f0fdf4; padding: 10px; border-left: 4px solid #16a34a; font-size: 0.9rem;">
+                            <strong>AI Status:</strong> Review Required. The AI has proposed changes based on your request.
+                        </div>
+                        
+                        <div class="diff-view" style="display: flex; gap: 10px; height: 300px; margin-bottom: 20px;">
+                            <div style="flex: 1; display: flex; flex-direction: column;">
+                                <label style="font-weight: bold; margin-bottom: 5px;">Proposed Content</label>
+                                <textarea readonly style="flex: 1; resize: none; border: 1px solid #16a34a; background: #f0fdf4;">${newContent}</textarea>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 20px;">
+                             <label style="font-weight: bold; display: block; margin-bottom: 5px;">Feedback (Optional)</label>
+                             <input type="text" id="reviewFeedback" placeholder="e.g., Make it more professional, remove section X..." style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                        </div>
+
+                        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                            <button onclick="submitReview(false)" style="background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">
+                                <i class="fas fa-undo"></i> Request Changes
+                            </button>
+                            <button onclick="submitReview(true)" style="background: #16a34a; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold;">
+                                <i class="fas fa-check"></i> Approve & Apply
+                            </button>
+                        </div>
+                    </div>
+                 `;
+
+                // Hide initial options
+                document.getElementById('improveOptions').style.display = 'none';
+
+                // Append or replace content. 
+                // Since the modal structure isn't fully visible in my snippet (it's likely hidden inlines or I missed it), 
+                // I will assume there's a container I can target. 
+                // The 'improveModal' usually has a content div. 
+                // Let's create a container for this if it doesn't exist, or replace the options container.
+
+                let reviewContainer = document.getElementById('reviewContainer');
+                if (reviewContainer) reviewContainer.remove();
+
+                // Insert after options
+                document.getElementById('improveOptions').insertAdjacentHTML('afterend', reviewHTML);
+            }
+
+            async function submitReview(approved) {
+                if (!activeThreadId) return;
+
+                const feedback = document.getElementById('reviewFeedback').value;
+                const container = document.getElementById('reviewContainer');
+
+                // Show loading state in button
+                container.style.opacity = '0.5';
+
+                try {
+                    const response = await fetch(`/api/workflow/${activeThreadId}/review`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            approve: approved,
+                            feedback: feedback
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.status === 'completed') {
+                        document.getElementById('prdEditor').value = data.final_content;
+                        updatePreview();
+                        showNotification('Changes applied successfully!', 'success');
+                        closeImproveModal();
+
+                        // Reset UI
+                        resetImproveModal();
+                    } else if (data.status === 'rejected') {
+                        showNotification('Feedback sent! AI is processing...', 'info');
+                        // Ideally we poll here again or getting ready for next loop.
+                        // But for POC, we just close or show "Processing again".
+                        // Since my loop logic was "Feedback -> generate -> human_review", 
+                        // we should ideally wait for the NEXT review state.
+
+                        // Quick hack for POC loop:
+                        container.innerHTML = '<div style="text-align: center; padding: 20px;"><i class="fas fa-spinner fa-spin"></i> AI is revising based on your feedback...</div>';
+
+                        // Poll for next state
+                        pollForNextReview(activeThreadId);
+                    }
+                } catch (e) {
+                    showNotification('Error submitting review: ' + e.message, 'error');
+                    container.style.opacity = '1';
+                }
+            }
+
+            async function pollForNextReview(threadId) {
+                // Simple poll
+                let attempts = 0;
+                const interval = setInterval(async () => {
+                    attempts++;
+                    if (attempts > 10) {
+                        clearInterval(interval);
+                        showNotification('Optimization taking too long.', 'error');
+                        return;
+                    }
+
+                    try {
+                        const res = await fetch(`/api/workflow/${threadId}/state`);
+                        const data = await res.json();
+
+                        // We expect it to pause at 'human_review' again or complete?
+                        // If my graph logic loops 'generate' -> 'human_review', 
+                        // checks 'next_step'.
+
+                        if (data.next_step && data.next_step.includes('human_review')) {
+                            clearInterval(interval);
+                            // Re-show review UI
+                            // We need to fetch the NEW content. data.current_content has it?
+                            showReviewUI(data.current_content);
+                        }
+                    } catch (e) { console.error(e); }
+                }, 2000);
+            }
+
+            function resetImproveModal() {
+                document.getElementById('heading-improve').innerText = "Improve with AI";
+                document.getElementById('improveOptions').style.display = 'grid';
+                document.getElementById('improveActions').style.display = 'flex';
+                document.getElementById('improveLoading').style.display = 'none';
+                const rev = document.getElementById('reviewContainer');
+                if (rev) rev.remove();
+                activeThreadId = null;
             }
 
             function resetForNewPRD() {
@@ -2138,7 +2287,7 @@
                 sendBtn.disabled = true;
 
                 try {
-                    const response = await fetch('/api/prd/chat', {
+                    const response = await fetch('/api/workflow/chat', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
