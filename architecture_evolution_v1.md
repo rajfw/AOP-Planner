@@ -55,8 +55,8 @@ The new API design provides clearer contracts for frontend integration:
 
 ### Enhanced User Documentation
 We've introduced several key artifacts to help developers:
-- [Implementation Plan](file:///Users/rasubramani/.gemini/antigravity/brain/66d59cca-d34d-4e44-81d9-bdec8314f01f/implementation_plan.md) - Technical roadmap.
-- [Walkthrough](file:///Users/rasubramani/.gemini/antigravity/brain/66d59cca-d34d-4e44-81d9-bdec8314f01f/walkthrough.md) - Proof of verification.
+- [Implementation Plan](./implementation_plan.md) - Technical roadmap.
+- [Walkthrough](./walkthrough.md) - Proof of verification.
 
 ---
 
