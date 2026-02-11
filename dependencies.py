@@ -41,7 +41,7 @@ class LLMClient:
         try:
             # Using specific key/url from original app.py if env var not set, 
             # though best practice is env vars. Keeping original logic for compatibility.
-            api_key = os.getenv("OPENAI_API_KEY", "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7Im5hbWUiOiJSYWplc3dhciBQIFMiLCJlbWFpbCI6InJhamVzd2FyLnN1YnJhbWFuaUBmcmVzaHdvcmtzLmNvbSIsImltYWdlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jS0FBUkNWSktyMjhxbU0xRTdnUE1fSlhPcDU4MEZHM2prNThMYzQ1SVB6eVFqN0lxWF89czk2LWMifSwianRpIjoiT3NOSUtEVVdiaHhjSElvZHNMNXFEIiwiaWF0IjoxNzY5OTI3MTA3LCJleHAiOjE3NzA1MzE5MDd9.WASBTxcAlJhAjWlzdz4Myfa3DRdO8JdlLZsArUuMt10")
+            api_key = os.getenv("OPENAI_API_KEY", "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7Im5hbWUiOiJSYWplc3dhciBQIFMiLCJlbWFpbCI6InJhamVzd2FyLnN1YnJhbWFuaUBmcmVzaHdvcmtzLmNvbSIsImltYWdlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jS0FBUkNWSktyMjhxbU0xRTdnUE1fSlhPcDU4MEZHM2prNThMYzQ1SVB6eVFqN0lxWF89czk2LWMifSwianRpIjoiUGNVU0xxOFNrR3lYdmF1aFlEQTdsIiwiaWF0IjoxNzcwNzg2NTYwLCJleHAiOjE3NzEzOTEzNjB9.JglVKNUeldw7thE2swT0jiXKkf2M3DNUCZZ0WAIAWOg")
             base_url = os.getenv("OPENAI_BASE_URL", "https://cloudverse.freshworkscorp.com/api/v1")
             
             self.client = OpenAI(api_key=api_key, base_url=base_url)
