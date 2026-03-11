@@ -2003,9 +2003,13 @@
                 let attempts = 0;
                 const interval = setInterval(async () => {
                     attempts++;
-                    if (attempts > 10) {
+                    if (attempts > 60) {
                         clearInterval(interval);
-                        showNotification('Optimization taking too long.', 'error');
+                        showNotification('Optimization taking too long. Please try again later.', 'error');
+                        const container = document.getElementById('reviewContainer');
+                        if (container) {
+                            container.innerHTML = '<div style="text-align: center; padding: 20px; color: #ef4444;">Optimization timed out.</div>';
+                        }
                         return;
                     }
 
@@ -2013,14 +2017,16 @@
                         const res = await fetch(`/api/workflow/${threadId}/state`);
                         const data = await res.json();
 
-                        // We expect it to pause at 'human_review' again or complete?
-                        // If my graph logic loops 'generate' -> 'human_review', 
-                        // checks 'next_step'.
-
-                        if (data.next_step && data.next_step.includes('human_review')) {
+                        // We expect it to pause at 'human_review' again or complete
+                        if (data.status === 'completed') {
                             clearInterval(interval);
-                            // Re-show review UI
-                            // We need to fetch the NEW content. data.current_content has it?
+
+                            // The final content is what we want to review/apply
+                            showNotification('AI has finished revising!', 'success');
+                            showReviewUI(data.current_content);
+
+                        } else if (data.next_step && data.next_step.includes('human_review')) {
+                            clearInterval(interval);
                             showReviewUI(data.current_content);
                         }
                     } catch (e) { console.error(e); }

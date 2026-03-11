@@ -33,9 +33,15 @@ def generate_improvement(state: AgentState):
     # We need to access the client configuration. 
     # Ideally, we inject this, but for simplicity in this module:
     import os
-    api_key = os.getenv("OPENAI_API_KEY", "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7Im5hbWUiOiJSYWplc3dhciBQIFMiLCJlbWFpbCI6InJhamVzd2FyLnN1YnJhbWFuaUBmcmVzaHdvcmtzLmNvbSIsImltYWdlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jS0FBUkNWSktyMjhxbU0xRTdnUE1fSlhPcDU4MEZHM2prNThMYzQ1SVB6eVFqN0lxWF89czk2LWMifSwianRpIjoiUGNVU0xxOFNrR3lYdmF1aFlEQTdsIiwiaWF0IjoxNzcwNzg2NTYwLCJleHAiOjE3NzEzOTEzNjB9.JglVKNUeldw7thE2swT0jiXKkf2M3DNUCZZ0WAIAWOg")
+    api_key = os.getenv("OPENAI_API_KEY")
     base_url = os.getenv("OPENAI_BASE_URL", "https://cloudverse.freshworkscorp.com/api/v1")
     
+    if api_key:
+        logger.info(f"Workflow Agent: OpenAI key loaded from environment variable (starts with {api_key[:10]}...)")
+    else:
+        api_key = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7Im5hbWUiOiJSYWplc3dhciBQIFMiLCJlbWFpbCI6InJhamVzd2FyLnN1YnJhbWFuaUBmcmVzaHdvcmtzLmNvbSIsImltYWdlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jS0FBUkNWSktyMjhxbU0xRTdnUE1fSlhPcDU4MEZHM2prNThMYzQ1SVB6eVFqN0lxWF89czk2LWMifSwianRpIjoiUUtGY3FRYjNZZWkwUTBhUmdNbnpRIiwiaWF0IjoxNzczMjE3NTkyLCJleHAiOjE3NzM4MjIzOTJ9.hOsTgnj5_J4VBJpEg5eUNkWMXgWjfwTAB9UeKUByNqc"
+        logger.info("Workflow Agent: Using internal fallback key")
+
     llm = ChatOpenAI(
         api_key=api_key,
         base_url=base_url,
@@ -61,7 +67,7 @@ def generate_improvement(state: AgentState):
     ]
     
     response = llm.invoke(messages)
-    return {"improved_content": response.content}
+    return {"improved_content": response.content, "feedback": None}
 
 # In-memory checkpointer for HITL state persistence
 checkpointer = MemorySaver()

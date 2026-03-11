@@ -39,14 +39,18 @@ class LLMClient:
         self.client = None
         self.available = False
         try:
-            # Using specific key/url from original app.py if env var not set, 
-            # though best practice is env vars. Keeping original logic for compatibility.
-            api_key = os.getenv("OPENAI_API_KEY", "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7Im5hbWUiOiJSYWplc3dhciBQIFMiLCJlbWFpbCI6InJhamVzd2FyLnN1YnJhbWFuaUBmcmVzaHdvcmtzLmNvbSIsImltYWdlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jS0FBUkNWSktyMjhxbU0xRTdnUE1fSlhPcDU4MEZHM2prNThMYzQ1SVB6eVFqN0lxWF89czk2LWMifSwianRpIjoiUGNVU0xxOFNrR3lYdmF1aFlEQTdsIiwiaWF0IjoxNzcwNzg2NTYwLCJleHAiOjE3NzEzOTEzNjB9.JglVKNUeldw7thE2swT0jiXKkf2M3DNUCZZ0WAIAWOg")
+            api_key = os.getenv("OPENAI_API_KEY")
+            if api_key:
+                logger.info(f"OpenAI key loaded from environment variable (starts with {api_key[:10]}...)")
+            else:
+                api_key = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7Im5hbWUiOiJSYWplc3dhciBQIFMiLCJlbWFpbCI6InJhamVzd2FyLnN1YnJhbWFuaUBmcmVzaHdvcmtzLmNvbSIsImltYWdlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jS0FBUkNWSktyMjhxbU0xRTdnUE1fSlhPcDU4MEZHM2prNThMYzQ1SVB6eVFqN0lxWF89czk2LWMifSwianRpIjoiUUtGY3FRYjNZZWkwUTBhUmdNbnpRIiwiaWF0IjoxNzczMjE3NTkyLCJleHAiOjE3NzM4MjIzOTJ9.hOsTgnj5_J4VBJpEg5eUNkWMXgWjfwTAB9UeKUByNqc"
+                logger.info("OpenAI key: Using internal fallback key")
+
             base_url = os.getenv("OPENAI_BASE_URL", "https://cloudverse.freshworkscorp.com/api/v1")
             
             self.client = OpenAI(api_key=api_key, base_url=base_url)
             self.available = True
-            logger.info("OpenAI client initialized")
+            logger.info(f"OpenAI client initialized targeting {base_url}")
         except Exception as e:
             logger.error(f"Failed to init OpenAI: {e}")
 

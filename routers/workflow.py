@@ -112,8 +112,10 @@ async def get_workflow_state(thread_id: str):
         "current_content": state_snapshot.values.get("improved_content")
     }
 
+from fastapi import BackgroundTasks
+
 @router.post("/{thread_id}/review")
-async def review_workflow(thread_id: str, request: FeedbackRequest):
+async def review_workflow(thread_id: str, request: FeedbackRequest, backgroundTasks: BackgroundTasks):
     """Provide human review/feedback."""
     config = {"configurable": {"thread_id": thread_id}}
     state_snapshot = await app_graph.aget_state(config)
@@ -122,12 +124,6 @@ async def review_workflow(thread_id: str, request: FeedbackRequest):
         raise HTTPException(status_code=400, detail="Workflow already completed or not active")
     
     if request.approve:
-        # Proceed to end (human_review -> END)
-        # We can update state if needed, but for now just resume.
-        # Command(resume=None) is implicit if we just invoke again?
-        # Typically we use update_state or just invoke with None input to resume.
-        
-        # In this simple graph, resuming from 'human_review' just goes to END.
         result = await app_graph.ainvoke(None, config=config)
         return {
             "thread_id": thread_id,
@@ -135,30 +131,13 @@ async def review_workflow(thread_id: str, request: FeedbackRequest):
             "final_content": result.get("improved_content")
         }
     else:
-        # If rejected/feedback, we want to go BACK to 'generate'.
-        # We can update state with feedback and force the next node to be 'generate'.
-        
         await app_graph.aupdate_state(
             config, 
-            {"feedback": request.feedback}, 
-            as_node="human_review" # Simulate being in human review
+            {"feedback": request.feedback}
         )
-        # Now forcing redirection content logic is tricky in linear graph without conditional edges.
-        # Ideally the graph definition should have a conditional edge from 'human_review':
-        #   if Approved -> END
-        #   if Feedback -> generate
         
-        # Since I defined linear generate->human_review->END, I need to modify the graph definition 
-        # to support the loop back. But "update_state" allows "time travel" effectively or state modification.
-        # Actually, best practice is conditional edge.
-        # But this is "implementation" phase, so I should probably fix the graph definition first.
-        # For now, I will error if feedback is provided saying "Feedback loop not implemented in POC graph yet"
-        # OR I can just say "Approved" finishes it.
+        # Resume the graph in the background
+        backgroundTasks.add_task(app_graph.ainvoke, None, config=config)
         
-        # Let's fix the graph definition in the next step or assume approval for the POC.
-        # I'll stick to simple "Approved" path for now as per plan "User (via API) will approve or edit the content."
-        # If they *edit*, they likely replace the content.
-        
-        # If request has new content (edits), we validly save that as final.
-        return {"status": "rejected", "message": "Feedback loop requires graph update."}
+        return {"status": "rejected", "message": "Feedback sent to AI."}
 
